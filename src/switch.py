@@ -31,21 +31,22 @@ def on_message(client, userdata, msg):
 
 def main():
     energenie.init()
-    try:
-        client = mqtt.Client()
-        client.on_connect = on_connect
-        client.on_message = on_message
+    while True:
+        try:
+            client = mqtt.Client()
+            client.on_connect = on_connect
+            client.on_message = on_message
 
-        client.username_pw_set("emonpi", "emonpimqtt2016")
-        client.connect("home.local", 1883, 60)
+            client.username_pw_set("emonpi", "emonpimqtt2016")
+            client.connect("home.local", 1883, 60)
 
-        # Blocking call that processes network traffic, dispatches callbacks and
-        # handles reconnecting.
-        # Other loop*() functions are available that give a threaded interface and a
-        # manual interface.
-        client.loop_forever()
-    finally:
-        energenie.finished()
+            # Blocking call that processes network traffic, dispatches callbacks and
+            # handles reconnecting.
+            # Other loop*() functions are available that give a threaded interface and a
+            # manual interface.
+            client.loop_forever()
+        finally:
+            energenie.finished()
 
 if __name__ == "__main__":
     main()
