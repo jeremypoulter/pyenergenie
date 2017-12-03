@@ -18,4 +18,30 @@ ADD test
 type=ENER002
 device_id=[0x24780, 4]
 
+ADD christmas tree
+type=ENER002
+device_id=[0x247A0, 1]
 
+ADD conservatory
+type=ENER002
+device_id=[0x247A0, 2]
+
+ADD christmas lights
+type=ENER002
+device_id=[0x24790, 0]
+
+ADD christmas 1
+type=ENER002
+device_id=[0x24790, 1]
+
+ADD christmas 2
+type=ENER002
+device_id=[0x24790, 2]
+
+ADD christmas 3
+type=ENER002
+device_id=[0x24790, 3]
+
+ADD christmas 4
+type=ENER002
+device_id=[0x24790, 4]
