@@ -38,7 +38,7 @@ def main():
             client.on_message = on_message
 
             client.username_pw_set("emonpi", "emonpimqtt2016")
-            client.connect("home.local", 1883, 60)
+            client.connect("home.lan", 1883, 60)
 
             # Blocking call that processes network traffic, dispatches callbacks and
             # handles reconnecting.
