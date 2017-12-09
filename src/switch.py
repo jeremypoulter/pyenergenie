@@ -1,12 +1,34 @@
 import time
 import energenie
 import paho.mqtt.client as mqtt
+import Queue
+import threading
 
-def setup_tool():
-    device = energenie.registry.get("fish tank")
-    #device = energenie.Devices.MIHO008((0x24780, 1))
-    device.turn_on()
+q = Queue.Queue()
 
+def controller():
+    energenie.init()
+
+    while True:
+        try:
+            msg = q.get()
+            print(msg.topic+" "+str(msg.payload))
+            name = msg.topic.split("/", 2)[1]
+            device = energenie.registry.get(name)
+            if str(msg.payload) == "1":
+                print(name+" on")
+                for x in range(0, 5):
+                    device.turn_on()
+                    time.sleep(0.1)
+            else:
+                print(name+" off")
+                for x in range(0, 5):
+                    device.turn_off()
+                    time.sleep(0.1)
+        except:
+            print("Got exception")
+        finally:
+            q.task_done()
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
@@ -18,19 +40,14 @@ def on_connect(client, userdata, flags, rc):
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
-    print(msg.topic+" "+str(msg.payload))
-    name = msg.topic.split("/", 2)[1]
-    device = energenie.registry.get(name)
-    if str(msg.payload) == "1":
-        print(name+" on")
-        device.turn_on()
-    else:
-        print(name+" off")
-        device.turn_off()
-
+    q.put(msg)
 
 def main():
-    energenie.init()
+    # Start a thread to process the key presses
+    t = threading.Thread(target=controller)
+    t.daemon = True
+    t.start()
+
     while True:
         try:
             client = mqtt.Client()
@@ -46,7 +63,7 @@ def main():
             # manual interface.
             client.loop_forever()
         finally:
-            energenie.finished()
+            print("Restarting...")
 
 if __name__ == "__main__":
     main()
